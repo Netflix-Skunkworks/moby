@@ -1,0 +1,15 @@
+steps:
+  - label: Build docker-ce bionic package
+    command: make ubuntu-bionic
+    artifact_paths: "components/packaging/deb/debbuild/ubuntu-bionic/*"
+  - wait
+  - trigger: titus-upload-debs
+    async: false
+    branches: "master v*"
+    build:
+      env:
+        CALLER_BUILD_ID: "${BUILDKITE_BUILD_ID}"
+        CALLER_JOB_ID: "${BUILDKITE_JOB_ID}"
+        CALLER_UPLOAD_DEB: "components/packaging/deb/debbuild/ubuntu-bionic/docker*.deb"
+        CALLER_PACKAGE_NAME: "docker-ce"
+        CALLER_DIST: "bionic"
